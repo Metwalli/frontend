@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "e-commerce-83a26": {
+      "hosting": {
+        "multikart": [
+          "e-commerce-83a26"
+        ]
+      }
+    }
+  }
+}
