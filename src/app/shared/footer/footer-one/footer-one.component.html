@@ -7,17 +7,17 @@
 					<div class="col-lg-6">
 						<div class="subscribe">
 							<div>
-								<h4>KNOW IT ALL FIRST!</h4>
-								<p>Never Miss Anything From Multikart By Signing Up To Our Newsletter. </p>
+								<h4>{{"know-first-title" | translate }}</h4>
+								<p>{{"know-first-subtitle" | translate }} </p>
 							</div>
 						</div>
 					</div>
 					<div class="col-lg-6">
 						<form class="form-inline subscribe-form" action="https://pixelstrap.us19.list-manage.com/subscribe/post?u=5a128856334b598b395f1fc9b&amp;id=082f74cbda" target="_blank" method="post">
 							<div class="form-group mx-sm-3">
-								<input type="email" #name name="EMAIL" id="mce-EMAIL" class="form-control" placeholder="Enter your email">
+								<input type="email" #name name="EMAIL" id="mce-EMAIL" class="form-control" placeholder="{{'enter your email' | translate }}">
 							</div>
-							<button type="submit" class="btn btn-solid">subscribe</button>
+							<button type="submit" class="btn btn-solid">{{"subscribe" | translate }}</button>
 						</form>
 					</div>
 				</div>
@@ -29,13 +29,13 @@
 			<div class="row footer-theme partition-f">
 				<div class="col-lg-4 col-md-6">
 					<div class="footer-title footer-mobile-title">
-						<h4>about</h4>
+						<h4>{{"about" | translate }}</h4>
 					</div>
 					<div class="footer-contant">
 						<div class="footer-logo">
 							<img [src]="themeLogo" alt="logo">
 						</div>
-						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, </p>
+						<p>{{"contact-us-social-media" | translate}} </p>
 						<div class="footer-social">
                             <ul>
                                 <li>
@@ -60,14 +60,14 @@
 				<div class="col offset-xl-1">
 					<div class="sub-title">
 						<div class="footer-title">
-                            <h4>Categories</h4>
+                            <h4>{{"categories" | translate }}</h4>
                         </div>
                         <div class="footer-contant">
                             <ul>
-                                <li><a href="javascript:void(0)">Womens Fashion</a></li>
-                                <li><a href="javascript:void(0)">Mens Fashion</a></li>
-                                <li><a href="javascript:void(0)">Kids Fashion</a></li>
-                                <li><a href="javascript:void(0)">Featured</a></li>
+                                <li><a href="javascript:void(0)">{{"about-us" | translate }}</a></li>
+                                <li><a href="javascript:void(0)">{{"privacy-policy"| translate }}</a></li>
+                                <li><a href="javascript:void(0)">{{"trems-conditions" | translate }}</a></li>
+                                <li><a href="javascript:void(0)">{{"featured" | translate }}</a></li>
                             </ul>
                         </div>
 					</div>
@@ -75,15 +75,15 @@
 				<div class="col">
 					<div class="sub-title">
 						<div class="footer-title">
-                            <h4>why we choose</h4>
+                            <h4>{{"why-we-choose" | translate}}</h4>
                         </div>
                         <div class="footer-contant">
                             <ul>
-                                <li><a href="javascript:void(0)">shipping & return</a></li>
-                                <li><a href="javascript:void(0)">secure shopping</a></li>
-                                <li><a href="javascript:void(0)">gallary</a></li>
-                                <li><a href="javascript:void(0)">affiliates</a></li>
-                                <li><a href="javascript:void(0)">contacts</a></li>
+                                <li><a href="javascript:void(0)">{{"shipping-return" | translate }}</a></li>
+                                <li><a href="javascript:void(0)">{{"secure-shopping" | translate }}</a></li>
+                                <li><a href="javascript:void(0)">{{"gallary"| translate }}</a></li>
+                                <li><a href="javascript:void(0)">{{"affiliates"| translate }}</a></li>
+                                <li><a href="javascript:void(0)">{{"contacts" | translate }}</a></li>
                             </ul>
                         </div>
 					</div>
@@ -91,15 +91,14 @@
 				<div class="col">
 					<div class="sub-title">
 						<div class="footer-title">
-						    <h4>store information</h4>
+						    <h4>{{"store-information" | translate }}</h4>
 						</div>
 						<div class="footer-contant">
 						    <ul class="contact-list">
-						        <li><i class="fa fa-map-marker"></i>Multikart Demo Store, Demo store
-						            India 345-659</li>
-						        <li><i class="fa fa-phone"></i>Call Us: 123-456-7898</li>
-						        <li><i class="fa fa-envelope-o"></i>Email Us: <a>Support@Fiot.com</a></li>
-						        <li><i class="fa fa-fax"></i>Fax: 123456</li>
+						        <li><i class="fa fa-map-marker"></i>{{ "store-information-address" | translate}}</li>
+						        <li><i class="fa fa-phone"></i>123-456-7898</li>
+						        <li><i class="fa fa-envelope-o"></i><a>Service@smart-kids.com</a></li>
+						        <li><i class="fa fa-fax"></i>{{"fax" | translate }} 123456</li>
 						    </ul>
 						</div>
 					</div>
@@ -112,7 +111,7 @@
 			<div class="row">
                 <div class="col-xl-6 col-md-6 col-sm-12">
                   <div class="footer-end">
-                    <p><i class="fa fa-copyright" aria-hidden="true"></i> {{ today | date:'y'}} theme forest powered by pixelstrap</p>
+                    <p><i class="fa fa-copyright" aria-hidden="true"></i> {{ today | date:'y'}} {{"powered-by" | translate }}</p>
                   </div>
                 </div>
                 <div class="col-xl-6 col-md-6 col-sm-12">

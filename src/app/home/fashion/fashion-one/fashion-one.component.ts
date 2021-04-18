@@ -11,33 +11,35 @@ import { Product } from '../../../shared/models/product.model';
   styleUrls: ['./fashion-one.component.scss']
 })
 export class FashionOneComponent implements OnInit {
-  productList: Observable<Product[]>;
-  public products: Product[] = [];
+  productList: Product[] = [];
   public productCollections: any[] = [];
   
-  constructor(public productService: ProductService) {
-    this.productList = productService.getProductList();
-    // this.productService.getProducts.subscribe(response => {
-    //   this.products = response.filter(item => item.type == 'fashion');
-    //   // Get Product Collection
-    //   this.products.filter((item) => {
-    //     item.collection.filter((collection) => {
-    //       const index = this.productCollections.indexOf(collection);
-    //       if (index === -1) this.productCollections.push(collection);
-    //     })
-    //   })
-    // });
+  constructor(public productService: ProductService) {    
+    productService.getProductList().subscribe(response => {
+      this.productList = response;
+      // Get Product Collection
+      this.productList.filter((item) => {
+        item.collection.filter((collection) => {
+          const index = this.productCollections.indexOf(collection);
+          if (index === -1) this.productCollections.push(collection);
+        })
+      })
+    });
   }
 
   public ProductSliderConfig: any = ProductSlider;
 
   public sliders = [{
     title: 'welcome to fashion',
-    subTitle: 'Men fashion',
+    subTitle: 'kids fashion',
     image: 'assets/images/slider/1.jpg'
   }, {
     title: 'welcome to fashion',
-    subTitle: 'Women fashion',
+    subTitle: 'toddler fashion',
+    image: 'assets/images/slider/2.jpg'
+  }, {
+    title: 'welcome to fashion',
+    subTitle: 'baby fashion',
     image: 'assets/images/slider/2.jpg'
   }]
 
@@ -45,11 +47,23 @@ export class FashionOneComponent implements OnInit {
   public collections = [{
     image: 'assets/images/collection/fashion/1.jpg',
     save: 'save 50%',
-    title: 'men'
+    title: 'kids-boy',
+    params: "Kids Boy"
   }, {
     image: 'assets/images/collection/fashion/2.jpg',
     save: 'save 50%',
-    title: 'women'
+    title: 'kids-girl',
+    params: "Kids Girl"
+  },{
+    image: 'assets/images/collection/fashion/1-3.jpg',
+    save: 'save 50%',
+    title: 'toddler-boy',
+    params: "Toddler Boy"
+  },{
+    image: 'assets/images/collection/fashion/1-2.jpg',
+    save: 'save 50%',
+    title: 'toddler-girl',
+    params: "Toddler Girl"
   }];
 
   // Blog
@@ -99,7 +113,7 @@ export class FashionOneComponent implements OnInit {
 
   // Product Tab collection
   getCollectionProducts(collection) {
-    return this.products.filter((item) => {
+    return this.productList.filter((item) => {
       if (item.collection.find(i => i === collection)) {
         return item
       }

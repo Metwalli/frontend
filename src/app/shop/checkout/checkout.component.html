@@ -152,9 +152,9 @@
                                     </div>
                                     <ul class="qty" *ngIf='products.length'>
                                         <li *ngFor="let product of products">
-                                        	 {{ product.title }} × {{ product.quantity }}
+                                        	 {{ product.name }} 
                                         	<span>
-                                                {{ (product.price | discount:product) * productService?.Currency.price | currency:productService?.Currency.currency:'symbol' }}
+                                                {{ (product.price.salePrice | discount:product) * productService?.Currency.price | currency:productService?.Currency.currency:'symbol' }}
                                             </span>
                                         </li>
                                     </ul>

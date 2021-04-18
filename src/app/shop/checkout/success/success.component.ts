@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { Order } from '../../../shared/classes/order';
-import { OrderService } from '../../../shared/services/order.service';
-import { ProductService } from '../../../shared/services/product.service';
+import { Order } from '../../../shared/models/order.model';
+import { OrderService } from '../../../core/services/order.service';
+import { ProductService } from '../../../core/services/product.service';
 
 @Component({
   selector: 'app-success',
@@ -10,7 +10,7 @@ import { ProductService } from '../../../shared/services/product.service';
 })
 export class SuccessComponent implements OnInit, AfterViewInit{
 
-  public orderDetails : Order = {};
+  public orderDetails : Order = new Order();
 
   constructor(public productService: ProductService,
     private orderService: OrderService) { }

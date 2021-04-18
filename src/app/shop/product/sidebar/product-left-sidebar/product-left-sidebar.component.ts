@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Image } from '@ks89/angular-modal-gallery';
+import { Observable } from 'rxjs';
+
 
 import { OrderLine } from '../../../../shared/models/order.model'
 import { ProductDetailsMainSlider, ProductDetailsThumbSlider } from '../../../../shared/data/slider';
@@ -24,7 +26,7 @@ export class ProductLeftSidebarComponent implements OnInit {
   public selectedColor: string = "";
   public selectedVariant: ProductVariant = new ProductVariant();
   public mobileSidebar: boolean = false;
-  public ImageSrc : string
+  public imageSrc : string
   public productVariantList : any[]=[];
   public avialableColorList: string[]=[];
   public avialableSizeList: string[]=[];
@@ -38,10 +40,8 @@ export class ProductLeftSidebarComponent implements OnInit {
   constructor(
     private route: ActivatedRoute, 
     private router: Router,
-    public productService: ProductService) {
+    private productService: ProductService) {
       
-      // this.productService.getItem(this.route.snapshot.params['id']).valueChanges()
-      //     .subscribe(item => this.product = item)
     }
 
   ngOnInit(): void {
@@ -54,11 +54,12 @@ export class ProductLeftSidebarComponent implements OnInit {
         this.avialableColorList = this.getColorList()
         this.avialableSizeList = this.getSizeList()
         this.imagesRect = this.getImages()
-        console.log(this.imagesRect)
       })
 
   }
-
+  getCurrency(){
+    return this.productService.Currency
+  }
   getImages(){
     const imgs: Image[] = [];
     for(let i = 0; i< this.productVariantList.length; i++){
@@ -68,10 +69,10 @@ export class ProductLeftSidebarComponent implements OnInit {
   }
 
   getColorList() {
-    const colors: string[]=[];
+    const colors: any[]=[];
     for(let variant of this.productVariantList) {
-        if( colors.indexOf(variant.color) == -1  ){         
-            colors.push(variant.color)               
+        if( colors.indexOf({color: variant.color, image: variant.img}) == -1  ){         
+            colors.push({color:variant.color,image: variant.img})               
       }
     }
     return colors;
@@ -103,22 +104,29 @@ export class ProductLeftSidebarComponent implements OnInit {
     return sizes;
   }
 
-  selectColor(color){
-    
-    if( this.selectedColor == color ){
+  onChangeImage(image){
+    debugger
+    this.imageSrc = image.url
+  }
+
+  selectColor(color){    
+    if( this.selectedColor == color['color'] ){
       this.selectedColor = ""
-      this.selectedVariant = null;
+      this.selectedVariant = new ProductVariant();
     }
     else{
       if( this.selectedSize != ""){
-        let v = this.getVariant(color, this.selectedSize)
-        if( v.stock > 0){
-          this.selectedColor = color; 
-          this.selectedVariant = v;
-        }
+        let v = this.getVariant(color['color'], this.selectedSize)
+        if(v)
+          if( v.stock > 0){
+            this.selectedColor = color['color']; 
+            this.imageSrc = color['image']
+            this.selectedVariant = v;
+          }          
       }
       else
-        this.selectedColor = color
+        this.selectedColor = color['color']
+        this.imageSrc = color['image']
     }    
   }
 
@@ -130,11 +138,12 @@ export class ProductLeftSidebarComponent implements OnInit {
     }
     else{    
       if( this.selectedColor != ""){
-        let v = this.getVariant(this.selectedColor, size)
-        if( v.stock > 0){
-          this.selectedSize = size; 
-          this.selectedVariant = v;
-        }
+        let v = this.getVariant(this.selectedColor, size) 
+        if(v)       
+          if( v.stock > 0){
+            this.selectedSize = size; 
+            this.selectedVariant = v;
+          }
       }
       else
         this.selectedSize = size
@@ -153,9 +162,9 @@ export class ProductLeftSidebarComponent implements OnInit {
 
 
   setOrderLine(){
-    this.orderLine.description = this.product.name
-    this.orderLine.productID = this.product.id
-    this.orderLine.variantID = this.selectedVariant.id
+    this.orderLine.description = this.product.name + " Size:" + this.selectedVariant.size + " Color:" + this.selectedVariant.color
+    this.orderLine.productId = this.product.id
+    this.orderLine.variantId = this.selectedVariant.id
     this.orderLine.priceLocalCurrency = this.selectedVariant.price
     this.orderLine.priceMainCurrency = this.selectedVariant.price
     this.orderLine.image = this.selectedVariant.img
@@ -165,7 +174,6 @@ export class ProductLeftSidebarComponent implements OnInit {
   
   // Add to cart
   async addToCart() {    
-    debugger
     if(this.selectedVariant.id != ""){
       this.setOrderLine()
       const status = await this.productService.addToCart(this.orderLine);

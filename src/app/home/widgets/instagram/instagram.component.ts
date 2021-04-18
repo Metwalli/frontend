@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { InstagramService } from '../../../shared/services/instagram.service';
+import { InstagramService } from '../../../core/services/instagram.service';
 import { InstaSlider } from '../../../shared/data/slider';
 
 @Component({

@@ -1,21 +1,21 @@
 
 // Order
-export interface Order {
+export class Order {
     name: string;
-    orderNo: string;
+    orderId: string;
     state: string;
     paymentRef: string;
     orderDate: Date;
     validityDate: Date;
     isExpired: boolean;
     updatedDate: Date;
-    useID: string;
-    customerID: string;
-    partnerInvoiceID: string;
+    useId: string;
+    customerId: string;
+    partnerInvoiceId: string;
     shippingRef: any;
-    partnerShippedID: string;
-    priceListID: string;
-    currencyID: string;
+    partnerShippedId: string;
+    priceListId: string;
+    currencyId: string;
     invoiceStatus: string;
     amountTax: number;
     amountTotal: number;
@@ -23,9 +23,9 @@ export interface Order {
 }
 
 export class OrderLine{
-    orderID: string;
-    productID: string;
-    variantID: string;
+    orderId: string;
+    productId: string;
+    variantId: string;
     description: string;
     image: string;
     qty: number;

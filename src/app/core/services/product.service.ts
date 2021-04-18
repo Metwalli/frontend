@@ -24,14 +24,12 @@ const state = {
 })
 export class ProductService {
 
-  public Currency = { name: 'Dollar', currency: 'USD', price: 1 } // Default Currency
+  public Currency: any = null; // = { name: 'Dollar', currency: 'USD', price: 1 } // Default Currency
   public OpenCart: boolean = false;
 
-  productVariantList$: Observable<any[]>;
   private catCollection: AngularFirestoreCollection<any>;
   public productsCollection: AngularFirestoreCollection<any>;
-  private task: AngularFireUploadTask;
-  private file: File;
+  public currencyExchangeList: AngularFirestoreCollection<any>;
   public currentProduct: Product;
   percentage: Observable<number>;
   snapshot: Observable<any>;
@@ -47,6 +45,8 @@ export class ProductService {
     ) {
       this.catCollection = afs.collection<any>('category');
       this.productsCollection = afs.collection<any>('products');
+      this.currencyExchangeList = afs.collection<any>('currencyExchange');
+      
       this.afs
         .collection("products")
         .get()
@@ -55,52 +55,26 @@ export class ProductService {
             this.productList.push(doc.data());
           });
         });
-  }
-
-  // getFilteredProducts(sizeFilter$, brandFilter$){
-  //   this.products = combineLatest(
-  //   sizeFilter$,
-  //   brandFilter$
-  //   ).pipe(
-  //     switchMap(([size, color]) => 
-  //       this.afs.collection('items', ref => {
-  //         let query : firebase.firestore.CollectionReference | firebase.firestore.Query = ref;
-  //         if (size) { query = query.where('size', '==', size) };
-  //         if (color) { query = query.where('color', '==', color) };
-  //         return query;
-  //       }).valueChanges()
-  //     )
-  //   );
-  // }
-
-  getProductList(): Observable<Product[]>{
-    return this.productsCollection.valueChanges();
-  }
+  } 
     
   getCategoryList() {
     return this.afs.collection('category').valueChanges();
   }
-  
-  getProduct(id: string): AngularFirestoreDocument<Product>{
-    return this.afs.doc<Product>(`products/${id}`);
-  }
-  
+   
   getVariant(id: string){
-    return this.afs.collection<any>('variants')
-      .valueChanges().pipe(map(variants => { 
-      return variants.find((v: any) => { 
-        return v.id == id; 
-      }); 
-    }));
+    return this.afs.collection('variants', ref => ref.where('id', '==', id)).valueChanges();
+    // return this.afs.collection<any>('variants')
+    //   .valueChanges().pipe(map(variants => { 
+    //   return variants.find((v: any) => { 
+    //     return v.id == id; 
+    //   }); 
+    // }));
   }
-  getProductStock(id: string){
-    debugger
-    let variant: any;
-    variant = this.getVariant(id)
-    
-    return variant.stock
+  
+  getVariantList(){
+    return this.afs.collection<any>('variants').valueChanges();
+  }
 
-  }
   getProductVariantList(productId: string | null){
     return this.afs.collection('variants', ref => ref.where('productId', '==', productId)).valueChanges();
   }
@@ -115,23 +89,23 @@ export class ProductService {
     ---------------------------------------------
   */
 
-  // Product
-  // private get products(): Observable<Product[]> {
-  //   this.Products = this.http.get<Product[]>('assets/data/products.json').pipe(map(data => data));
-  //   this.Products.subscribe(next => { localStorage['products'] = JSON.stringify(next) });
-  //   return this.Products = this.Products.pipe(startWith(JSON.parse(localStorage['products'] || '[]')));
-  // }
+  getProductList(): Observable<Product[]>{
+    return this.productsCollection.valueChanges();
+  }
+  getProduct(id: string): AngularFirestoreDocument<Product>{
+    return this.afs.doc<Product>("products/" + id);
+  }
 
   // Get Products
   public get getProducts(): Observable<Product[]> {
-    return this.getProductList();
+    return this.productsCollection.valueChanges();
   }
 
   // Get Products By Slug
-  public getProductBySlug(slug: string): Observable<Product> {    
+  public getProductById(id: string): Observable<Product> {    
     return this.getProductList().pipe(map(items => { 
       return items.find((item: any) => { 
-        return item.id == slug; 
+        return item.id == id; 
       }); 
     }));
   }
@@ -225,13 +199,10 @@ export class ProductService {
   }
 
   // Add to Cart
-  public addToCart(orderLine: OrderLine): any {
-    const cartItem = state.cart.find(item => item.varintID === orderLine.variantID);
+  public addToCart(orderLine: OrderLine): any {    
+    const cartItem = state.cart.find(item => item.variantId === orderLine.variantId);
     const qty = orderLine.qty ? orderLine.qty : 1;
-    const item = cartItem ? cartItem : orderLine;
-    // const stock = this.calculateStockCounts(item, qty);
     
-    // if(!stock) return false
 
     if (cartItem) {
         cartItem.qty += qty    
@@ -250,28 +221,15 @@ export class ProductService {
   // Update Cart Quantity
   public updateCartQuantity(orderLine: OrderLine, quantity: number): OrderLine | boolean {
     return state.cart.find((items, index) => {
-      if (items.id === orderLine.variantID) {
+      if (items.id === orderLine.variantId) {
         const qty = state.cart[index].qty + quantity
-        const stock = this.calculateStockCounts(state.cart[index], quantity)
-        if (qty !== 0 && stock) {
+        if (qty !== 0 ) {
           state.cart[index].qty = qty
         }
         localStorage.setItem("cartItems", JSON.stringify(state.cart));
         return true
       }
     })
-  }
-
-    // Calculate Stock Counts
-  public calculateStockCounts(orderLine, quantity) {
-    
-    const qty = orderLine.qty + quantity
-    const stock = this.getProductStock(orderLine.variantID)
-    if (stock < qty || stock == 0) {
-      this.toastrService.error('You can not add more items than available. In stock '+ stock +' items.');
-      return false
-    }
-    return true
   }
 
   // Remove Cart items
@@ -302,16 +260,16 @@ export class ProductService {
   */
 
   // Get Product Filter
-  public filterProducts(filter: any): Observable<Product[]> {        
-    return this.getProductList().pipe(map(product => 
-      product.filter((item: Product) => {
+  public filterProducts(filter: any): Observable<Product[]> {  
+    return this.getProductList().pipe(map(products => 
+      products.filter((item: Product) => {
         if (!filter.length) return true
-        const Tags = filter.some((prev) => { // Match Tags
-          if (item.brand) {
-            if (item.brand.includes(prev)) {
-              return prev
-            }
+        const Tags = filter.some((prev) => { // Match Tags          
+        if (item.tags) {
+          if (item.tags.includes(prev)) {
+            return prev
           }
+        }
         })
         return Tags
       })

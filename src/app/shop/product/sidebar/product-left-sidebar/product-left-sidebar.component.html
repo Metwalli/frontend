@@ -37,26 +37,26 @@
             <div class="row">
               <div class="col-lg-6">
                 <owl-carousel-o [options]="ProductDetailsMainSliderConfig" #owlCar  class="product-slick">
-                    <ng-container *ngFor="let image of imagesRect; index as i">
+                    <ng-container *ngFor="let image of product.images; index as i">
                         <ng-template carouselSlide [id]="i">
                             <div>
-                              <img [defaultImage]="'assets/images/product/placeholder.jpg'" 
-                                   [lazyLoad]="image['modal']['img']" 
+                              <img [defaultImage]="imageSrc ? imageSrc : 'assets/images/product/placeholder.jpg'" 
+                                   [lazyLoad]="imageSrc ? imageSrc : image.url" 
                                    class="img-fluid">
                             </div>
                         </ng-template>
                     </ng-container>
                 </owl-carousel-o>
-                <div class="col-12 p-0" *ngIf="imagesRect.length > 1">
+                <div class="col-12 p-0" *ngIf="avialableColorList.length > 1">
                     <div class="slider-nav">
                         <owl-carousel-o [options]="ProductDetailsThumbConfig" class="product-slick">
-                            <ng-container *ngFor="let image of imagesRect; index as i">
+                            <ng-container *ngFor="let image of product.images; index as i">
                                 <ng-template carouselSlide [id]="i">
                                     <div class="owl-thumb" [class.active]="i == activeSlide">
                                       <img [defaultImage]="'assets/images/product/placeholder.jpg'" 
-                                           [lazyLoad]="image['modal']['img']" 
+                                           [lazyLoad]="image.url" 
                                            class="img-fluid" 
-                                           (click)="owlCar.to(activeSlide = i.toString())">
+                                           (click)="owlCar.to(activeSlide = i.toString()); onChangeImage(image)">
                                     </div>
                                 </ng-template>
                             </ng-container>
@@ -68,18 +68,16 @@
                 <div class="product-right">
                   <h2>{{ product?.name }}</h2>
                   <h4>
-                      <del *ngIf="product?.discount">{{ product?.price * productService.Currency?.price | currency: productService.Currency?.currency:'symbol' }}</del>
-                      <span>{{ product?.discount }}% off</span>
+                    {{ product?.price.salePrice * getCurrency()?.price | currency:getCurrency()?.currency:'symbol' }}
+                    <del *ngIf="product?.price.price"><span class="money"> {{ product?.price.price * getCurrency()?.price | currency:getCurrency()?.currency:'symbol' }}</span></del>
                   </h4>
-                  <h3>
-                      {{ (product?.price | discount:product) * productService.Currency?.price | currency: productService.Currency?.currency:'symbol' }}
-                  </h3>
-                  <ul class="color-variant" *ngIf="productVariantList.length > 0">
-                    <li [class]="color" [class.active]="activeSlide == i.toString() && selectedColor == color" 
+                  
+                  <ul class="color-variant" *ngIf="avialableColorList.length > 0">
+                    <li [class]="color" [class.active]="selectedColor == color['color']" 
                         [class.disabled]="selectedVariant.stock <= 0"
-                        *ngFor="let color of avialableColorList; index as i" 
-                        [ngStyle]="{'background-color': color}"
-                        (click)="owlCar.to(activeSlide = i.toString()); selectColor(color) ">
+                        *ngFor="let color of avialableColorList" 
+                        [ngStyle]="{'background-color': color['color']}"
+                        (click)="selectColor(color) ">
                     </li>
                   </ul>
                   <!-- <app-stock-inventory [stock]="product?.stock"></app-stock-inventory> -->
@@ -90,7 +88,7 @@
                           <a href="javascrip:void(0)" (click)="SizeChart.openModal()">size chart</a>
                         </span>
                     </h6>
-                    <div class="size-box" *ngIf="productVariantList.length > 0">
+                    <div class="size-box" *ngIf="avialableSizeList.length > 0">
                       <ul>
                         <li [class.active]="selectedSize == size" 
                             [class.disabled]="selectedVariant.stock <= 0"

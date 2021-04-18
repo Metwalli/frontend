@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Product } from "../../../classes/product";
+import { Product } from "../../../models/product.model";
 
 @Component({
   selector: 'app-product-box-vertical',

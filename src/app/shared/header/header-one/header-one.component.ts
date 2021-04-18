@@ -13,7 +13,7 @@ export class HeaderOneComponent implements OnInit {
   @Input() sticky: boolean = false; // Default false
   
   public stick: boolean = false;
-
+  public topbarTitle: string = "topbar-title";
   constructor() { }
 
   ngOnInit(): void {

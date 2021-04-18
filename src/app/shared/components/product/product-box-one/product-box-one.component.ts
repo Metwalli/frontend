@@ -19,7 +19,7 @@ export class ProductBoxOneComponent implements OnInit {
   @Input() product: Product;
   @Input() currency: any = this.productService.Currency; // Default Currency 
   @Input() thumbnail: boolean = false; // Default False 
-  @Input() onHowerChangeImage: boolean = false; // Default False
+  @Input() onHoverChangeImage: boolean = false; // Default False
   @Input() cartModal: boolean = false; // Default False
   @Input() loader: boolean = false;
   
@@ -27,7 +27,7 @@ export class ProductBoxOneComponent implements OnInit {
   @ViewChild("cartModal") CartModal: CartModalComponent;
 
   public orderLine: OrderLine = new OrderLine();
-  public ImageSrc : string
+  public imageSrc : string
   public productVariantList : any[]=[];
   public avialableColorList: string[]=[];
   public imagesRect: Image[] ;
@@ -37,14 +37,6 @@ export class ProductBoxOneComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router
     ) { 
-
-      // this.productService.getProductVariantList(this.route.snapshot.params['id'])
-      //   .subscribe(vList => {
-      //     this.productVariantList = vList;
-      //     this.avialableColorList = this.getColorList();
-      //     // debugger
-      //     this.imagesRect = this.getImages();
-      //   });     
   }
 
   ngOnInit(): void {
@@ -59,24 +51,13 @@ export class ProductBoxOneComponent implements OnInit {
     }
   }
 
-  // Get Product Color
-  Color(variants) {
-    const uniqColor = [];
-    for (let i = 0; i < Object.keys(variants).length; i++) {
-      if (uniqColor.indexOf(variants[i].color) === -1 && variants[i].color) {
-        uniqColor.push(variants[i].color)
-      }
-    }
-    return uniqColor
-  }
-
   // Change Variants
   ChangeVariants(color, product) {
     product.variants.map((item) => {
       if (item.color === color) {
         product.images.map((img) => {
           if (img.image_id === item.image_id) {
-            this.ImageSrc = img.src;
+            this.imageSrc = img.src;
           }
         })
       }
@@ -86,12 +67,12 @@ export class ProductBoxOneComponent implements OnInit {
   
   // Change Variants Image
   ChangeVariantsImage(src) {
-    this.ImageSrc = src;
+    this.imageSrc = src;
   }
 
   addToCart(product: Product) {
     this.orderLine.description = product.name
-    this.orderLine.productID = product.id
+    this.orderLine.productId = product.id
     // this.orderLine.variantID = this.getVariantID()
     // this.productService.addToCart(product);
   }
@@ -112,14 +93,12 @@ export class ProductBoxOneComponent implements OnInit {
     return imgs  
   }
 
+  // Get Product Color and Images
   getColorList() {
-    const colors: string[]=[];
-    let colorExist: boolean = false
+    const colors: any[]=[];
     for(let variant of this.productVariantList) {
-      for(let att of variant.attrs){
-        if(att['name'] == 'Color' && colors.indexOf(att['value']) == -1){        
-            colors.push(att['value'])            
-        }
+        if( colors.indexOf({color: variant.color, image: variant.img}) == -1  ){         
+            colors.push({color:variant.color,image: variant.img})               
       }
     }
     return colors;

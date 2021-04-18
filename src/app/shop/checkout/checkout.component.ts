@@ -3,9 +3,10 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { IPayPalConfig, ICreateOrderRequest } from 'ngx-paypal';
 import { environment } from '../../../environments/environment';
-import { Product } from "../../shared/classes/product";
-import { ProductService } from "../../shared/services/product.service";
-import { OrderService } from "../../shared/services/order.service";
+import { Product } from '../../shared/models/product.model';
+import { OrderLine } from '../../shared/models/order.model'
+import { ProductService } from "../../core/services/product.service";
+import { OrderService } from "../../core/services/order.service";
 
 @Component({
   selector: 'app-checkout',
@@ -15,7 +16,7 @@ import { OrderService } from "../../shared/services/order.service";
 export class CheckoutComponent implements OnInit {
 
   public checkoutForm:  FormGroup;
-  public products: Product[] = [];
+  public products: OrderLine[] = [];
   public payPalConfig ? : IPayPalConfig;
   public payment: string = 'Stripe';
   public amount:  any;

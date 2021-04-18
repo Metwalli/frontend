@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductDetailsMainSlider, ProductDetailsThumbSlider } from '../../../shared/data/slider';
-import { Product } from '../../../shared/classes/product';
-import { ProductService } from '../../../shared/services/product.service';
+import { Product } from '../../../shared/models/product.model';
+import { ProductService } from '../../../core/services/product.service';
 import { SizeModalComponent } from "../../../shared/components/modal/size-modal/size-modal.component";
 
 @Component({
@@ -12,7 +12,7 @@ import { SizeModalComponent } from "../../../shared/components/modal/size-modal/
 })
 export class BundleProductComponent implements OnInit {
 
-  public product: Product = {};
+  public product: Product = new Product();
   public counter: number = 1;
   public activeSlide: any = 0;
   public selectedSize: any;

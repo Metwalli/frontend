@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Product } from '../../../../shared/classes/product';
 
+import { ProductService } from '../../../../core/services/product.service'
+import { Product, ProductVariant } from '../../../../shared/models/product.model'
 @Component({
   selector: 'app-colors',
   templateUrl: './colors.component.html',
@@ -8,30 +9,30 @@ import { Product } from '../../../../shared/classes/product';
 })
 export class ColorsComponent implements OnInit {
 
+  public uniqueColors = []
+
   @Input() products: Product[] = [];
+
   @Input() colors: any[] = [];
 
   @Output() colorsFilter  : EventEmitter<any> = new EventEmitter<any>();
   
   public collapse: boolean = true;
 
-  constructor() { 
+  constructor( private productService: ProductService ) { 
   }
 
   ngOnInit(): void {
-  }
-
-  get filterbycolor() {
-    const uniqueColors = []
-    this.products.filter((product) => {
-      product.variants.filter((variant) => {
-        if (variant.color) {
-          const index = uniqueColors.indexOf(variant.color)
-          if (index === -1) uniqueColors.push(variant.color)
+    this.productService.getVariantList()
+      .subscribe((vList: any) => {
+        for(let variant of vList){
+          if (variant.color) {
+            const index = this.uniqueColors.indexOf(variant.color.toLocaleUpperCase())
+            if (index === -1) this.uniqueColors.push(variant.color.toLocaleUpperCase())
+          }
         }
+        
       })
-    })
-    return uniqueColors
   }
 
   appliedFilter(event) {

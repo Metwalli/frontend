@@ -2,12 +2,7 @@ export class Product {
     id: string = "";
     
     name: string ="";
-    description: [
-        {
-            lang: string,
-            val: string;
-        }
-    ];
+    description: string = "";
     type: string;
     collection: string[]=[];
     category: string[]=[];
@@ -33,6 +28,7 @@ export class Product {
     productSeller: string;  
     
     discount: number=0;
+    stock: number = 0; // Temporary to fix components
 }
 
 export class ProductVariant {

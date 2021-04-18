@@ -18,7 +18,7 @@ import { AboutUsComponent } from './about-us/about-us.component';
 import { SearchComponent } from './search/search.component';
 import { TypographyComponent } from './typography/typography.component';
 import { ReviewComponent } from './review/review.component';
-import { OrderSuccessComponent } from './order-success/order-success.component';
+// import { OrderSuccessComponent } from './order-success/order-success.component';
 import { CompareOneComponent } from './compare/compare-one/compare-one.component';
 import { CompareTwoComponent } from './compare/compare-two/compare-two.component';
 import { CollectionComponent } from './collection/collection.component';
@@ -55,7 +55,7 @@ import { MasonryFullWidthComponent } from './portfolio/masonry-full-width/masonr
     SearchComponent,
     TypographyComponent,
     ReviewComponent,
-    OrderSuccessComponent,
+    // OrderSuccessComponent,
     CompareOneComponent,
     CompareTwoComponent,
     CollectionComponent,

@@ -23,7 +23,7 @@
                             <app-brands [products]="allProducts" [brands]="brandFilter" (brandsFilter)="updateFilter($event)">
                             </app-brands>
                             <!-- color filter start here -->
-                            <app-colors [products]="allProducts" [colors]="colorFilter" (colorsFilter)="updateFilter($event)">
+                            <app-colors [products]="filteredProducts" [colors]="colorFilter" (colorsFilter)="updateFilter($event)">
                             </app-colors>
                             <!-- size filter start here -->
                             <app-size [products]="allProducts" [size]="sizeFilter" (sizeFilter)="updateFilter($event)">

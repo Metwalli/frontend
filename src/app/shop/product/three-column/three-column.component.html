@@ -1,4 +1,4 @@
-<app-breadcrumb [title]="product?.title" [breadcrumb]="'Product'"></app-breadcrumb>
+<app-breadcrumb [title]="product?.name" [breadcrumb]="'Product'"></app-breadcrumb>
 <!-- section start -->
 <section class="section-b-space">
     <div class="collection-wrapper">
@@ -32,7 +32,7 @@
                 </div>
                 <div class="col-lg-4">
                     <div class="product-right product-description-box">
-                        <h2>{{ product.title | titlecase }}</h2>
+                        <h2>{{ product.name | titlecase }}</h2>
                         <div class="border-product">
                             <h6 class="product-title">product details</h6>
                             <p>{{ product.description.substring(0, 200)+'...' }}</p>

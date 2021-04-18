@@ -1,4 +1,4 @@
-<app-breadcrumb [title]="product?.title" [breadcrumb]="'Product'"></app-breadcrumb>
+<app-breadcrumb [title]="product?.name" [breadcrumb]="'Product'"></app-breadcrumb>
 <section class="section-b-space">
     <div class="collection-wrapper ratio_asos">
         <div class="container">
@@ -16,7 +16,7 @@
                 </div>
                 <div class="col-lg-6 rtl-text">
                     <div class="product-right">
-                        <h2>{{ product?.title }}</h2>
+                        <h2>{{ product?.name }}</h2>
                         <h4>
                             <del *ngIf="product?.discount">{{ product?.price * productService.Currency?.price | currency: productService.Currency?.currency:'symbol' }}</del>
                             <span>{{ product?.discount }}% off</span>

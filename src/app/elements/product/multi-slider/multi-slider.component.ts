@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ProductOneSlider } from '../../../shared/data/slider';
-import { Product } from '../../../shared/classes/product';
-import { ProductService } from '../../../shared/services/product.service';
+import { Product } from '../../../shared/models/product.model';
+import { ProductService } from '../../../core/services/product.service';
 
 @Component({
   selector: 'app-multi-slider',

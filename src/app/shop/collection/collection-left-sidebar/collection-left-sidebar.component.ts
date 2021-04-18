@@ -7,11 +7,6 @@ import { switchMap } from 'rxjs/operators';
 import { ProductService } from '../../../core/services/product.service'
 import { Product } from '../../../shared/models/product.model'
 
-
-// import { ProductService } from "../../../shared/services/product.service";
-// import { Product } from 'src/app/shared/classes/product';
-// // import { Product } from '../../../shared/classes/product';
-
 @Component({
   selector: 'app-collection-left-sidebar',
   templateUrl: './collection-left-sidebar.component.html',
@@ -23,9 +18,6 @@ export class CollectionLeftSidebarComponent implements OnInit {
   public layoutView: string = 'grid-view';
   public allProducts: Product[]=[];
   public filteredProducts: Product[] = [];
-  public brandFilter$ : BehaviorSubject<string|null>;
-  public sizeFilter$ : BehaviorSubject<string|null>;
-  public colorFilter$ : BehaviorSubject<string|null>;
   public brandFilter: any[] = [];
   public colorFilter: any[] = [];
   public sizeFilter: any[] = [];
@@ -58,15 +50,14 @@ export class CollectionLeftSidebarComponent implements OnInit {
         this.category = params.category ? params.category : null;
         this.sortBy = params.sortBy ? params.sortBy : 'ascending';
         this.pageNo = params.page ? params.page : this.pageNo;
-        
-
+                
         // Get Filtered Products..
         this.productService.filterProducts(this.tags).subscribe(response => {         
           // Sorting Filter
           this.filteredProducts = this.productService.sortProducts(response, this.sortBy);
           // Category Filter
-          // if(params.category)
-          //   this.products = this.products.filter(item => item.type == this.category);
+          if(params.category)
+            this.filteredProducts = this.filteredProducts.filter(item => item.type == this.category);
           // Price Filter
           
           this.filteredProducts = this.filteredProducts.filter(item => item.price.salePrice >= this.minPrice && item.price.salePrice <= this.maxPrice) 
@@ -81,14 +72,12 @@ export class CollectionLeftSidebarComponent implements OnInit {
     // debugger
     this.productService.getProductList()
       .subscribe(products => this.allProducts = products)
-    // console.log(this.products)
   }
 
   // Append filter value to Url
 
   updateFilter(tags: any) {
-    debugger
-    tags.page = null; // Reset Pagination    
+    tags.page = null; // Reset Pagination  
     this.router.navigate([], { 
       relativeTo: this.route,
       queryParams: tags,

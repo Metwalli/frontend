@@ -18,7 +18,7 @@
         </ul>
         <h6>currency</h6>
         <ul class="list-inline">
-          <li *ngFor="let currency of currencies">
+          <li *ngFor="let currency of currencies | async">
             <a href="javascript:void(0)" (click)="changeCurrency(currency)">{{ currency.name }}</a>
           </li>
         </ul>
@@ -38,12 +38,12 @@
       <ul class="show-div shopping-cart" *ngIf='orderLines.length'>
         <li *ngFor="let line of orderLines">
           <div class="media">
-            <a [routerLink]="['/shop/product/left/sidebar/', line.variantID]">
+            <a [routerLink]="['/shop/product/left/sidebar/', line.productId]">
               <img class="mr-3" [src]="line?.image">
             </a>
             <div class="media-body">
-              <a [routerLink]="['/shop/product/left/sidebar/', line.variantID]">
-                <h4>{{ line?.descrtiption }}</h4>
+              <a [routerLink]="['/shop/product/left/sidebar/', line.productId]">
+                <h5>{{ line?.description }}</h5>
               </a>
               <h4>
                 <span>

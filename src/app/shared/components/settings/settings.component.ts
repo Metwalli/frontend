@@ -18,7 +18,10 @@ export class SettingsComponent implements OnInit {
   public orderLines: OrderLine[] = [];
 
   
-  public languages = [{ 
+  public languages = [{
+    name: 'العربية',
+    code: 'ar'
+  }, { 
     name: 'English',
     code: 'en'
   }, {
@@ -26,36 +29,31 @@ export class SettingsComponent implements OnInit {
     code: 'fr'
   }];
 
-  public currencies = [{
-    name: 'Euro',
-    currency: 'EUR',
-    price: 0.90 // price of euro
-  }, {
-    name: 'Rupees',
-    currency: 'INR',
-    price: 70.93 // price of inr
-  }, {
-    name: 'Pound',
-    currency: 'GBP',
-    price: 0.78 // price of euro
-  }, {
-    name: 'Dollar',
-    currency: 'USD',
-    price: 1 // price of usd
-  }]
+  public currencies: Observable<any[]>;
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object,
     private translate: TranslateService,
     public productService: ProductService) {
     this.productService.cartItems.subscribe(response => this.orderLines = response);
+    this.currencies = this.productService.currencyExchangeList.valueChanges();
   }
 
   ngOnInit(): void {
+    if(this.productService.Currency == null)
+      this.currencies
+          .subscribe(c => this.productService.Currency = c[0]);
   }
 
   changeLanguage(code){
     if (isPlatformBrowser(this.platformId)) {
       this.translate.use(code)
+      if(code == 'ar') {
+        document.body.classList.remove('ltr')
+        document.body.classList.add('rtl')
+      } else {
+        document.body.classList.remove('rtl')
+        document.body.classList.add('ltr')
+      }
     }
   }
 

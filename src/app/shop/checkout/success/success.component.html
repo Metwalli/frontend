@@ -10,7 +10,7 @@
                 <div class="error-section">
                     <h1>404</h1>
                     <h2>page not found</h2>
-                    <a [routerLink]="'/home/fashion'" class="btn btn-solid">back to home</a>
+                    <a [routerLink]="'/home'" class="btn btn-solid">back to home</a>
                 </div>
             </div>
         </div>
@@ -49,19 +49,19 @@
                         <div class="col-3 order_detail">
                             <div>
                                 <h4>product name</h4>
-                                <h5>{{ product.title }}</h5>
+                                <h5>{{ product.name }}</h5>
                             </div>
                         </div>
                         <div class="col-3 order_detail">
                             <div>
                                 <h4>quantity</h4>
-                                <h5>{{ product.quantity }}</h5>
+                                <h5>{{ product.qty }}</h5>
                             </div>
                         </div>
                         <div class="col-3 order_detail">
                             <div>
                                 <h4>price</h4>
-                                <h5>{{ product?.price * productService?.Currency?.price | discount:product | currency:productService?.Currency.currency:'symbol' }}</h5>
+                                <h5>{{ product?.price.salePrice * productService?.Currency?.price | discount:product | currency:productService?.Currency.currency:'symbol' }}</h5>
                             </div>
                         </div>
                     </div>

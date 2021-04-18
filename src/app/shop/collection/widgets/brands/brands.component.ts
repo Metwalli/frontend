@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Product } from '../../../../shared/classes/product';
+import { Product } from '../../../../shared/models/product.model';
 
 @Component({
   selector: 'app-brands',
@@ -21,9 +21,8 @@ export class BrandsComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  get filterbyBrand() {
+  get filterByBrand() {
     const uniqueBrands = [];
-    
     this.products.filter((product) => {
       if (product.brand) {
         const index = uniqueBrands.indexOf(product.brand)
