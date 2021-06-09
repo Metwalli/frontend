@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProductService } from "../../core/services/product.service";
-import { Product } from "../../shared/models/product.model";
+import { SettingsService} from '../../core/services/settings.service'
+import { Product, ProductVariant } from "../../shared/models/product.model";
+import { OrderLine } from '../../shared/models/order.model'
 
 @Component({
   selector: 'app-wishlist',
@@ -13,23 +15,30 @@ export class WishlistComponent implements OnInit {
   public products: Product[] = [];
 
   constructor(private router: Router, 
-    public productService: ProductService) {
-    this.productService.wishlistItems.subscribe(response => this.products = response);
+    public productService: ProductService,
+    public settingsService: SettingsService ) {
+      
+      this.productService.wishlistItems.subscribe(response => this.products = response);
   }
 
   ngOnInit(): void {
   }
 
-  async addToCart(product: any) {
-    const status = await this.productService.addToCart(product);
-    if(status) {
-      this.router.navigate(['/shop/cart']);
-      this.removeItem(product);
-    }
+  async addToCart(product: Product) {
+    
+    this.gotoProductDetails(product)
   }
+
 
   removeItem(product: any) {
     this.productService.removeWishlistItem(product);
+  }
+
+  gotoProductDetails(product: any){   
+    this.productService.currentProduct = product;              
+    let link = ['/shop/product/left/sidebar/', product.id];
+    //debugger;
+    this.router.navigate(link);
   }
 
 }

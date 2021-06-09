@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { NewProductSlider } from '../../../data/slider';
 import { Product } from '../../../models/product.model';
 import { ProductService } from '../../../../core/services/product.service';
+import { SettingsService } from '../../../../core/services/settings.service';
 
 @Component({
   selector: 'app-product-box-vertical-slider',
@@ -17,7 +18,9 @@ export class ProductBoxVerticalSliderComponent implements OnInit {
 
   public NewProductSliderConfig: any = NewProductSlider;
 
-  constructor(public productService: ProductService) { 
+  constructor(
+    public productService: ProductService, 
+    public settingsService: SettingsService) { 
     this.productService.getProducts.subscribe(response => 
       this.products = response.filter(item => item.type == this.type)
     );

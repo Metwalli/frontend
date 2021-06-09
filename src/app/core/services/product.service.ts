@@ -16,20 +16,18 @@ const state = {
   products: JSON.parse(localStorage['products'] || '[]'),
   wishlist: JSON.parse(localStorage['wishlistItems'] || '[]'),
   compare: JSON.parse(localStorage['compareItems'] || '[]'),
-  cart: JSON.parse(localStorage['cartItems'] || '[]')
+  cart: JSON.parse(localStorage['cartItems'] || '[]'),  
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
-
-  public Currency: any = null; // = { name: 'Dollar', currency: 'USD', price: 1 } // Default Currency
+  
   public OpenCart: boolean = false;
-
+  public Currency: any = { name: 'Dollar', currency: 'USD', price: 1 } // Default Currency
   private catCollection: AngularFirestoreCollection<any>;
   public productsCollection: AngularFirestoreCollection<any>;
-  public currencyExchangeList: AngularFirestoreCollection<any>;
   public currentProduct: Product;
   percentage: Observable<number>;
   snapshot: Observable<any>;
@@ -45,7 +43,7 @@ export class ProductService {
     ) {
       this.catCollection = afs.collection<any>('category');
       this.productsCollection = afs.collection<any>('products');
-      this.currencyExchangeList = afs.collection<any>('currencyExchange');
+      
       
       this.afs
         .collection("products")
@@ -127,7 +125,7 @@ export class ProductService {
   }
 
   // Add to Wishlist
-  public addToWishlist(product): any {
+  public addToWishlist(product: Product): any {
     const wishlistItem = state.wishlist.find(item => item.id === product.id)
     if (!wishlistItem) {
       state.wishlist.push({
@@ -218,6 +216,15 @@ export class ProductService {
     return true;
   }
 
+  // Update Cart Currency 
+
+  public updateCartLocalCurrency(currency){    
+    for (let item of state.cart){
+      item.priceLocalCurrency = item.priceMainCurrency * currency.price
+      item.localCurrency = currency
+    }    
+  }
+
   // Update Cart Quantity
   public updateCartQuantity(orderLine: OrderLine, quantity: number): OrderLine | boolean {
     return state.cart.find((items, index) => {
@@ -248,7 +255,7 @@ export class ProductService {
         // if(curr.discount) {
         //   price = curr.priceLocalCurrency - (curr.priceLocalCurrency * curr.discount / 100)
         // }
-        return (prev + price * curr.qty) * this.Currency.price;
+        return (prev + price * curr.qty);
       }, 0);
     }));
   }

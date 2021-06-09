@@ -4,9 +4,14 @@ import { Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
 import { ProductService } from '../../../core/services/product.service'
+import { SettingsService } from '../../../core/services/settings.service'
 import { OrderLine } from '../../models/order.model'
+import { Language, Currency } from '../../models/settings.model'
 
-
+const state = {  
+  currentLanguage: JSON.parse(localStorage['currentLanguage'] || '[]'),
+  localCurrency: JSON.parse(localStorage['localCurrnecy'] || '[]')
+}
 
 @Component({
   selector: 'app-settings',
@@ -15,39 +20,43 @@ import { OrderLine } from '../../models/order.model'
 })
 export class SettingsComponent implements OnInit {
 
-  public orderLines: OrderLine[] = [];
-
+  public orderLines: OrderLine[] = []; 
   
-  public languages = [{
-    name: 'العربية',
-    code: 'ar'
-  }, { 
-    name: 'English',
-    code: 'en'
-  }, {
-    name: 'French',
-    code: 'fr'
-  }];
-
-  public currencies: Observable<any[]>;
+  public currencyList: Currency[] = [];
+  public languageList: Language[] = [];
+  
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object,
     private translate: TranslateService,
-    public productService: ProductService) {
-    this.productService.cartItems.subscribe(response => this.orderLines = response);
-    this.currencies = this.productService.currencyExchangeList.valueChanges();
+    public productService: ProductService,
+    public settingsService: SettingsService ) {
+    
+      this.productService.cartItems.subscribe(response => this.orderLines = response);
+      
+      // this.settingsService.currentLanguage.subscribe(res => this.currentLanguage = res[0])
   }
 
   ngOnInit(): void {
-    if(this.productService.Currency == null)
-      this.currencies
-          .subscribe(c => this.productService.Currency = c[0]);
+    
+    this.settingsService.getLanguageList()
+      .subscribe(langs => this.languageList = langs)
+    this.settingsService.getCurrencyList()
+      .subscribe(curr => this.currencyList = curr)
+    // if(this.settingsService.localCurrency == null)
+    //   this.currencyList
+    //       .subscribe(c => this.settingsService.localCurrency = c[0]);
+    // this.currentLanguage = this.settingsService.getCurrencyList()
+    
+    this.changeLanguage(this.settingsService.getCurrentLanguage());
+    this.changeCurrency(this.settingsService.getLocalCurrency());
   }
 
-  changeLanguage(code){
+  changeLanguage(language){
+    
     if (isPlatformBrowser(this.platformId)) {
-      this.translate.use(code)
-      if(code == 'ar') {
+      this.settingsService.setCurrentLanguage(language)
+      this.translate.use(language.code)
+      if(language.direction == 'rtl') {
         document.body.classList.remove('ltr')
         document.body.classList.add('rtl')
       } else {
@@ -65,8 +74,12 @@ export class SettingsComponent implements OnInit {
     this.productService.removeCartItem(product);
   }
 
-  changeCurrency(currency: any) {
-    this.productService.Currency = currency
+  changeCurrency(currency: any) {  
+    
+    if (isPlatformBrowser(this.platformId) && currency != null) {      
+      this.settingsService.setLocalCurrency(currency)   
+      this.productService.updateCartLocalCurrency(currency)
+    }      
   }
 
 }

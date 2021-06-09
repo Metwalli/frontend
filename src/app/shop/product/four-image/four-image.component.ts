@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Product } from '../../../shared/models/product.model';
 import { ProductService } from '../../../core/services/product.service';
+import { SettingsService } from '../../../core/services/settings.service';
 import { SizeModalComponent } from "../../../shared/components/modal/size-modal/size-modal.component";
 
 @Component({
@@ -18,8 +19,12 @@ export class FourImageComponent implements OnInit {
 
   @ViewChild("sizeChart") SizeChart: SizeModalComponent;
   
-  constructor(private route: ActivatedRoute, private router: Router,
-    public productService: ProductService) { 
+  constructor(
+    private route: ActivatedRoute, 
+    private router: Router,
+    public productService: ProductService,
+    public settingsService: SettingsService) { 
+      
       this.route.data.subscribe(response => this.product = response.data );
     }
 

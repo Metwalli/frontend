@@ -12,7 +12,7 @@ import { CollectionLeftSidebarComponent } from './collection/collection-left-sid
 import { CartComponent } from './cart/cart.component';
 import { WishlistComponent } from './wishlist/wishlist.component';
 import { CompareComponent } from './compare/compare.component';
-// import { CheckoutComponent } from './checkout/checkout.component';
+import { CheckoutComponent } from './checkout/checkout.component';
 // import { SuccessComponent } from './checkout/success/success.component';
 
 import { Resolver } from '../core/services/resolver.service';
@@ -69,10 +69,10 @@ const routes: Routes = [
     path: 'compare',
     component: CompareComponent
   },
-  // {
-  //   path: 'checkout',
-  //   component: CheckoutComponent
-  // },
+  {
+    path: 'checkout',
+    component: CheckoutComponent
+  },
   // {
   //   path: 'checkout/success/:id',
   //   component: SuccessComponent

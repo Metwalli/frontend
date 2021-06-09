@@ -7,6 +7,7 @@ import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { FireBaseConfig } from '../../environments/firebaseConfig'
 
 import { ProductService } from './services/product.service'
+import { SettingsService } from './services/settings.service'
 import { AuthService } from './services/auth.service';
 
 @NgModule({
@@ -19,7 +20,8 @@ import { AuthService } from './services/auth.service';
   ],
   providers: [
     AuthService, 
-    ProductService
+    ProductService,
+    SettingsService
   ]
 })
 export class CoreModule { }

@@ -11,6 +11,7 @@ import { TranslateHttpLoader} from '@ngx-translate/http-loader';
 import { SharedModule } from './shared/shared.module';
 import { CoreModule } from './core/core.module'
 import { AppRoutingModule } from './app-routing.module';
+import { AuthModule } from './auth/auth.module'
 
 import { AppComponent } from './app.component';
 import { ShopComponent } from './shop/shop.component';
@@ -53,6 +54,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     }),
     SharedModule,
     CoreModule,
+    AuthModule,
     AppRoutingModule
   ],
   providers: [],

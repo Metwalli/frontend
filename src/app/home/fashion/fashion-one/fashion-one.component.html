@@ -48,7 +48,7 @@
               <div class="product-box">
                 <app-product-box-one 
                   [product]="product" 
-                  [currency]="productService?.Currency"
+                  [currency]="settingsService?.localCurrency"
                   [thumbnail]="true"
                   [cartModal]="true">
                 </app-product-box-one>
@@ -77,7 +77,7 @@
               <div class="product-box">
                 <app-product-box-one 
                   [product]="product" 
-                  [currency]="productService?.Currency"
+                  [currency]="settingsService?.localCurrency"
                   [thumbnail]="true"
                   [cartModal]="true">
                 </app-product-box-one>
@@ -128,7 +128,7 @@
                   <div class="product-box">
                     <app-product-box-one 
                       [product]="product" 
-                      [currency]="productService?.Currency"
+                      [currency]="settingsService?.localCurrency"
                       [thumbnail]="true"
                       [cartModal]="true">
                     </app-product-box-one>

@@ -2,20 +2,21 @@
 // Order
 export class Order {
     name: string;
-    orderId: string;
+    id: string;
     state: string;
     paymentRef: string;
-    orderDate: Date;
+    orderDate: string;
     validityDate: Date;
     isExpired: boolean;
     updatedDate: Date;
-    useId: string;
+    userId: string;
     customerId: string;
     partnerInvoiceId: string;
     shippingRef: any;
+    shippingFees: number;
     partnerShippedId: string;
     priceListId: string;
-    currencyId: string;
+    currencyId: any;
     invoiceStatus: string;
     amountTax: number;
     amountTotal: number;
@@ -29,10 +30,11 @@ export class OrderLine{
     description: string;
     image: string;
     qty: number;
-    localCurrency: string;
+    localCurrency: any;
     priceLocalCurrency: number;
-    mainCurrency: string;
+    mainCurrency: any;
     priceMainCurrency: number;
+    exchangeRate: number;
     priceTax: number;
     discount: number;
     productUomQty: number;

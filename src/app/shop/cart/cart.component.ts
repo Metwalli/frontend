@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { ProductService } from '../../core/services/product.service'
+import { SettingsService } from '../../core/services/settings.service'
 import { Order, OrderLine} from '../../shared/models/order.model'
 
 @Component({
@@ -13,7 +14,11 @@ export class CartComponent implements OnInit {
 
   public orderLines: OrderLine[] = [];
 
-  constructor(public productService: ProductService) {
+  constructor(
+    public productService: ProductService,
+    public settingsService: SettingsService
+    ) {
+      
     this.productService.cartItems.subscribe(response => this.orderLines = response);
   }
 

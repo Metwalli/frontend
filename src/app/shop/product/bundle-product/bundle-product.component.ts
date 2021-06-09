@@ -4,6 +4,7 @@ import { ProductDetailsMainSlider, ProductDetailsThumbSlider } from '../../../sh
 import { Product } from '../../../shared/models/product.model';
 import { ProductService } from '../../../core/services/product.service';
 import { SizeModalComponent } from "../../../shared/components/modal/size-modal/size-modal.component";
+import { SettingsService } from '../../../core/services/settings.service';
 
 @Component({
   selector: 'app-bundle-product',
@@ -22,8 +23,12 @@ export class BundleProductComponent implements OnInit {
   public ProductDetailsMainSliderConfig: any = ProductDetailsMainSlider;
   public ProductDetailsThumbConfig: any = ProductDetailsThumbSlider;
 
-  constructor(private route: ActivatedRoute, private router: Router,
-    public productService: ProductService) { 
+  constructor(
+    private route: ActivatedRoute, 
+    private router: Router,
+    public productService: ProductService,
+    public settingsService: SettingsService
+    ) { 
       this.route.data.subscribe(response => this.product = response.data );
     }
 

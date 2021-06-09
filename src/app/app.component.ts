@@ -4,6 +4,7 @@ import { LoadingBarService } from '@ngx-loading-bar/core';
 import { map, delay, withLatestFrom } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 
+import { SettingsService } from './core/services/settings.service'
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -19,7 +20,10 @@ export class AppComponent {
   );
   
   constructor(@Inject(PLATFORM_ID) private platformId: Object,
-    private loader: LoadingBarService, translate: TranslateService) {
+    private loader: LoadingBarService, 
+    translate: TranslateService,
+    settingsService: SettingsService) {
+
     if (isPlatformBrowser(this.platformId)) {
       translate.setDefaultLang('en');
       translate.addLangs(['en', 'fr']);
@@ -27,35 +31,3 @@ export class AppComponent {
   }
 
 }
-
-// import { Component } from '@angular/core';
-// import { AngularFirestore } from '@angular/fire/firestore';
-// import { Observable, BehaviorSubject, combineLatest } from 'rxjs';
-// import { switchMap } from 'rxjs/operators';
-
-// export interface Item {
-//   text: string;
-//   color: string;
-//   size: string;
-// }
-
-// @Component({
-//   selector: 'app-root',
-//   template: `
-//   <ul>
-//     <li *ngFor="let item of items$ | async">
-//       {{ item.name }}
-//     </li>
-//   </ul>
-//   `,
-// })
-// export class AppComponent {
-//   items$: Observable<any[]>;
-  
-//   constructor(afs: AngularFirestore) {
-//       debugger
-//       this.items$ = afs.collection('Items').valueChanges()
-//       console.log(this.items$)
-     
-//   }
-// }

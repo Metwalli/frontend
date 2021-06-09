@@ -503,6 +503,9 @@ header {
 }
 
 .rtl {
+    .mega-menu-container {
+        direction: rtl;
+    }
     .link-section {
         float: right;
     }

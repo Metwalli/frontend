@@ -9226,7 +9226,12 @@ footer {
     left: unset;
     right: 1px;
 }
+.rtl {
+    form {
+        text-align: right;
+    }
 
+}
 .rtl {
     .no-found {
         h3,

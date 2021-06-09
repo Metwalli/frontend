@@ -8,6 +8,7 @@ import { OrderLine } from '../../../../shared/models/order.model'
 import { ProductDetailsMainSlider, ProductDetailsThumbSlider } from '../../../../shared/data/slider';
 import { Product, ProductVariant } from '../../../../shared/models/product.model';
 import { ProductService } from '../../../../core/services/product.service';
+import { SettingsService} from '../../../../core/services/settings.service';
 import { SizeModalComponent } from "../../../../shared/components/modal/size-modal/size-modal.component";
 
 @Component({
@@ -28,7 +29,7 @@ export class ProductLeftSidebarComponent implements OnInit {
   public mobileSidebar: boolean = false;
   public imageSrc : string
   public productVariantList : any[]=[];
-  public avialableColorList: string[]=[];
+  public avialableColorImageList: any[]=[];
   public avialableSizeList: string[]=[];
   public imagesRect: Image[]=[] ;
 
@@ -40,7 +41,8 @@ export class ProductLeftSidebarComponent implements OnInit {
   constructor(
     private route: ActivatedRoute, 
     private router: Router,
-    private productService: ProductService) {
+    private productService: ProductService,
+    public settingsService: SettingsService) {
       
     }
 
@@ -51,14 +53,14 @@ export class ProductLeftSidebarComponent implements OnInit {
     this.productService.getProductVariantList(this.route.snapshot.params['id'])
       .subscribe(vList =>{
         this.productVariantList = vList
-        this.avialableColorList = this.getColorList()
+        this.avialableColorImageList = this.getColorImageList()
         this.avialableSizeList = this.getSizeList()
         this.imagesRect = this.getImages()
       })
 
   }
   getCurrency(){
-    return this.productService.Currency
+    return this.settingsService.localCurrency
   }
   getImages(){
     const imgs: Image[] = [];
@@ -68,7 +70,7 @@ export class ProductLeftSidebarComponent implements OnInit {
     return imgs  
   }
 
-  getColorList() {
+  getColorImageList() {
     const colors: any[]=[];
     for(let variant of this.productVariantList) {
         if( colors.indexOf({color: variant.color, image: variant.img}) == -1  ){         
@@ -104,29 +106,30 @@ export class ProductLeftSidebarComponent implements OnInit {
     return sizes;
   }
 
-  onChangeImage(image){
-    debugger
-    this.imageSrc = image.url
+  onChangeImage(item){
+    
+    this.imageSrc = item['image']
+    this.selectedColor = item['color']
   }
 
-  selectColor(color){    
-    if( this.selectedColor == color['color'] ){
+  selectColor(item){    
+    if( this.selectedColor == item['color'] ){
       this.selectedColor = ""
       this.selectedVariant = new ProductVariant();
     }
     else{
       if( this.selectedSize != ""){
-        let v = this.getVariant(color['color'], this.selectedSize)
+        let v = this.getVariant(item['color'], this.selectedSize)
         if(v)
           if( v.stock > 0){
-            this.selectedColor = color['color']; 
-            this.imageSrc = color['image']
+            this.selectedColor = item['color']; 
+            this.imageSrc = item['image']
             this.selectedVariant = v;
           }          
       }
       else
-        this.selectedColor = color['color']
-        this.imageSrc = color['image']
+        this.selectedColor = item['color']
+        this.imageSrc = item['image']
     }    
   }
 
@@ -162,10 +165,12 @@ export class ProductLeftSidebarComponent implements OnInit {
 
 
   setOrderLine(){
+    
     this.orderLine.description = this.product.name + " Size:" + this.selectedVariant.size + " Color:" + this.selectedVariant.color
     this.orderLine.productId = this.product.id
     this.orderLine.variantId = this.selectedVariant.id
-    this.orderLine.priceLocalCurrency = this.selectedVariant.price
+    this.orderLine.localCurrency = this.settingsService.localCurrency
+    this.orderLine.priceLocalCurrency = this.selectedVariant.price * this.settingsService.localCurrency.price
     this.orderLine.priceMainCurrency = this.selectedVariant.price
     this.orderLine.image = this.selectedVariant.img
     this.orderLine.qty = this.counter || 1
@@ -173,7 +178,8 @@ export class ProductLeftSidebarComponent implements OnInit {
   }
   
   // Add to cart
-  async addToCart() {    
+  async addToCart() {   
+     
     if(this.selectedVariant.id != ""){
       this.setOrderLine()
       const status = await this.productService.addToCart(this.orderLine);
@@ -194,10 +200,7 @@ export class ProductLeftSidebarComponent implements OnInit {
 
   // Add to Wishlist
   addToWishlist() {
-    if(this.selectedVariant != null){ 
-      this.setOrderLine()
-      this.productService.addToWishlist(this.orderLine);
-    }
+    this.productService.addToWishlist(this.product);
   }
 
   // Toggle Mobile Sidebar

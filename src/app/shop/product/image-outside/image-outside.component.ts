@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ProductDetailsMainSlider, ProductDetailsThumbSlider } from '../../../shared/data/slider';
 import { Product } from '../../../shared/models/product.model';
 import { ProductService } from '../../../core/services/product.service';
+import { SettingsService } from '../../../core/services/settings.service';
 import { SizeModalComponent } from "../../../shared/components/modal/size-modal/size-modal.component";
 
 @Component({
@@ -22,8 +23,11 @@ export class ImageOutsideComponent implements OnInit {
   public ProductDetailsMainSliderConfig: any = ProductDetailsMainSlider;
   public ProductDetailsThumbConfig: any = ProductDetailsThumbSlider;
 
-  constructor(private route: ActivatedRoute, private router: Router,
-    public productService: ProductService) { 
+  constructor(
+    private route: ActivatedRoute, 
+    private router: Router,
+    public productService: ProductService,
+    public settingsService: SettingsService) { 
       this.route.data.subscribe(response => this.product = response.data );
     }
 

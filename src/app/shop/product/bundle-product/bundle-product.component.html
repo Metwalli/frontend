@@ -40,12 +40,12 @@
                     <h2>{{ product?.name }}</h2>
                     <h4>
                         <del *ngIf="product?.discount">
-                            {{ product?.price * productService.Currency?.price | currency: productService.Currency?.currency:'symbol' }}
+                            {{ product?.price * settingsService.localCurrency?.price | currency: settingsService.localCurrency?.currency:'symbol' }}
                         </del>
                         <span>{{ product?.discount }}% off</span>
                     </h4>
                     <h3>
-                        {{ (product?.price | discount:product) * productService.Currency?.price | currency: productService.Currency?.currency:'symbol' }}
+                        {{ (product?.price | discount:product) * settingsService.localCurrency?.price | currency: settingsService.localCurrency?.currency:'symbol' }}
                     </h3>
                     <ul class="color-variant" *ngIf="Color(product?.variants).length">
                         <li [class]="color" [class.active]="activeSlide == i.toString()" *ngFor="let color of Color(product?.variants); index as i" 

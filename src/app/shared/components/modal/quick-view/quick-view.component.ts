@@ -3,8 +3,13 @@ import { Component, OnInit, OnDestroy, ViewChild, TemplateRef, Input,
 import { isPlatformBrowser } from '@angular/common';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
-import { Product } from "../../../models/product.model";
+import { Image } from '@ks89/angular-modal-gallery';
+
+import { ProductDetailsMainSlider, ProductDetailsThumbSlider } from '../../../../shared/data/slider';
+import { Product, ProductVariant } from "../../../models/product.model";
+import { OrderLine } from '../../../models/order.model'
 import { ProductService } from '../../../../core/services/product.service';
+import { SettingsService } from '../../../../core/services/settings.service';
 
 @Component({
   selector: 'app-quick-view',
@@ -17,16 +22,106 @@ export class QuickViewComponent implements OnInit, OnDestroy  {
   @Input() currency: any;  
   @ViewChild("quickView", { static: false }) QuickView: TemplateRef<any>;
 
+  public ProductDetailsMainSliderConfig: any = ProductDetailsMainSlider;
+  public ProductDetailsThumbConfig: any = ProductDetailsThumbSlider;
+
   public closeResult: string;
   public ImageSrc: string;
   public counter: number = 1;
   public modalOpen: boolean = false;
+  public activeSlide: any = 0;
+  public orderLine: OrderLine = new OrderLine();
+  public selectedVariant: ProductVariant = new ProductVariant();
+  public imageSrc : string;
+  public productVariantList : any[]=[];
+  public avialableColorImageList: any[]=[];
+  public imagesRect: Image[];
+  public avialableSizeList: string[]=[];
+  public selectedColor: string = "";
+  public selectedSize: string = "";
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object,
     private router: Router, private modalService: NgbModal,
-    public productService: ProductService) { }
+    public productService: ProductService,
+    public settingsService: SettingsService ) { }
 
   ngOnInit(): void {
+    this.productService.getProductVariantList(this.product.id)
+      .subscribe(vList =>{
+        this.productVariantList = vList
+        this.avialableColorImageList = this.getColorImageList()
+        this.avialableSizeList = this.getSizeList()
+        this.imagesRect = this.getImages()      
+      })
+  }
+
+  getVariant(color, size){
+    
+    for(let variant of this.productVariantList){
+      if(variant.color == color && variant.size == size)
+        return variant
+    }
+    return null
+  }
+
+  
+  // Get Product Color and Images
+  getColorImageList() {
+    const colors: any[]=[];
+    for(let variant of this.productVariantList) {
+        if( colors.indexOf({color: variant.color, image: variant.img}) == -1  ){         
+            colors.push({color:variant.color,image: variant.img})               
+      }
+    }
+    return colors;
+  }
+ 
+  getSizeList(){
+    const sizes: string[]=[];
+    for(let variant of this.productVariantList) {     
+      if( sizes.indexOf(variant.size) == -1)       
+        sizes.push(variant.size)            
+    }
+    return sizes;
+  }
+
+  selectColor(color){    
+    
+    this.selectedColor = color['color']
+    this.imageSrc = color['image']   
+  }
+
+  selectSize(size) {
+    if( this.selectedSize == size ){
+      this.selectedSize = ""
+      this.selectedVariant = new ProductVariant();
+       
+    }
+    else{    
+      if( this.selectedColor != ""){
+        let v = this.getVariant(this.selectedColor, size) 
+        if(v)       
+          if( v.stock > 0){
+            this.selectedSize = size; 
+            this.selectedVariant = v;
+          }
+      }
+      else
+        this.selectedSize = size
+    }
+  }
+  getImages(){
+    const imgs: Image[] = [];
+    for(let i = 0; i< this.productVariantList.length; i++){
+      imgs.push(new Image(i, { img: this.productVariantList[i]['img'] }, { img: this.productVariantList[i]['img'] }))
+    }
+    return imgs  
+  }
+
+  onChangeImage(item){
+    
+    this.imageSrc = item['image']
+    this.selectedColor = item['color']
   }
 
   openModal() {
@@ -100,12 +195,28 @@ export class QuickViewComponent implements OnInit, OnDestroy  {
     if (this.counter > 1) this.counter-- ;
   }
 
+  setOrderLine(){
+    
+    this.orderLine.description = this.product.name + " Size:" + this.selectedVariant.size + " Color:" + this.selectedVariant.color
+    this.orderLine.productId = this.product.id
+    this.orderLine.variantId = this.selectedVariant.id
+    this.orderLine.localCurrency = this.settingsService.localCurrency
+    this.orderLine.priceLocalCurrency = this.selectedVariant.price * this.settingsService.localCurrency.price
+    this.orderLine.priceMainCurrency = this.selectedVariant.price
+    this.orderLine.image = this.selectedVariant.img
+    this.orderLine.qty = this.counter || 1
+    this.orderLine.state = "draft"
+  }
+  
   // Add to cart
-  async addToCart(product: any) {
-    product.quantity = this.counter || 1;
-    const status = await this.productService.addToCart(product);
-    if(status)
-      this.router.navigate(['/shop/cart']);
+  async addToCart() {   
+     
+    if(this.selectedVariant.id != ""){
+      this.setOrderLine()
+      const status = await this.productService.addToCart(this.orderLine);
+      if(status)
+        this.router.navigate(['/shop/cart']);
+    }
   }
 
   ngOnDestroy() {

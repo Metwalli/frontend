@@ -12,13 +12,13 @@
       <div class="show-div setting">
         <h6>language</h6>
         <ul>
-          <li *ngFor="let language of languages">
-            <a href="javascript:void(0)" (click)="changeLanguage(language.code)">{{ language.name }}</a>
+          <li *ngFor="let language of languageList">
+            <a href="javascript:void(0)" (click)="changeLanguage(language)">{{ language.name }}</a>
           </li>
         </ul>
         <h6>currency</h6>
         <ul class="list-inline">
-          <li *ngFor="let currency of currencies | async">
+          <li *ngFor="let currency of currencyList">
             <a href="javascript:void(0)" (click)="changeCurrency(currency)">{{ currency.name }}</a>
           </li>
         </ul>

@@ -37,9 +37,9 @@ export class NavService {
 		{
 			title: 'new-arrivals', type: 'sub', badge: true, badgeText: 'new', active: false, children: [									
 				{ path: '/shop/collection/left/sidebar', title: 'baby-boy', type: 'link', params: { category: 'Baby Boy'}, image: "https://firebasestorage.googleapis.com/v0/b/e-commerce-83a26.appspot.com/o/media%2F1600608491707_12.jpg?alt=media&token=270c9b4e-d6a4-4d66-9163-d7ba9234cc81" },
-				{ path: '/new-arrivals/baby-girl', title: 'baby-girl', type: 'link', params: { category: 'Baby Girl'} },
-				{ path: '/new-arrivals/baby-boy', title: 'toddler-boy', type: 'link', params: { category: 'Toddler Boy'} },
-				{ path: '/new-arrivals/baby-girl', title: 'toddler-girl', type: 'link', params: { category: 'Toddler Girl'} },											
+				{ path: '/shop/collection/left/sidebar', title: 'baby-girl', type: 'link', params: { category: 'Baby Girl'} },
+				{ path: '/shop/collection/left/sidebar', title: 'toddler-boy', type: 'link', params: { category: 'Toddler Boy'} },
+				{ path: '/shop/collection/left/sidebar', title: 'toddler-girl', type: 'link', params: { category: 'Toddler Girl'} },											
 			]
 		},
 		{

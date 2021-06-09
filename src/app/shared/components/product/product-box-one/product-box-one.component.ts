@@ -5,9 +5,10 @@ import { Image } from '@ks89/angular-modal-gallery';
 import { QuickViewComponent } from "../../modal/quick-view/quick-view.component";
 import { CartModalComponent } from "../../modal/cart-modal/cart-modal.component";
 
-import { Product } from '../../../models/product.model'
+import { Product, ProductVariant } from '../../../models/product.model'
 import { OrderLine } from '../../../models/order.model'
 import { ProductService } from '../../../../core/services/product.service';
+import { SettingsService} from '../../../../core/services/settings.service'
 
 @Component({
   selector: 'app-product-box-one',
@@ -17,7 +18,7 @@ import { ProductService } from '../../../../core/services/product.service';
 export class ProductBoxOneComponent implements OnInit {
 
   @Input() product: Product;
-  @Input() currency: any = this.productService.Currency; // Default Currency 
+  @Input() currency: any = this.settingsService.localCurrency; // Default Currency 
   @Input() thumbnail: boolean = false; // Default False 
   @Input() onHoverChangeImage: boolean = false; // Default False
   @Input() cartModal: boolean = false; // Default False
@@ -27,14 +28,17 @@ export class ProductBoxOneComponent implements OnInit {
   @ViewChild("cartModal") CartModal: CartModalComponent;
 
   public orderLine: OrderLine = new OrderLine();
-  public imageSrc : string
+  public selectedVariant: ProductVariant = new ProductVariant();
+  public imageSrc : string;
   public productVariantList : any[]=[];
-  public avialableColorList: string[]=[];
-  public imagesRect: Image[] ;
+  public avialableColorImageList: any[]=[];
+  public imagesRect: Image[];
+  public avialableSizeList: string[]=[];
+  public selectedColor: string = "";
 
   constructor(
     private productService: ProductService,
-    private route: ActivatedRoute,
+    private settingsService: SettingsService,
     private router: Router
     ) { 
   }
@@ -43,45 +47,90 @@ export class ProductBoxOneComponent implements OnInit {
     this.productService.getProductVariantList(this.product.id)
       .subscribe(vList =>{
         this.productVariantList = vList
-        this.avialableColorList = this.getColorList()
+        this.avialableColorImageList = this.getColorImageList()
+        this.avialableSizeList = this.getSizeList()
         this.imagesRect = this.getImages()
+        this.selectedVariant = this.getVariant(this.imageSrc, this.avialableSizeList[0])
+        this.selectColor(this.avialableColorImageList[0])
       })
     if(this.loader) {
       setTimeout(() => { this.loader = false; }, 2000); // Skeleton Loader
     }
   }
 
-  // Change Variants
-  ChangeVariants(color, product) {
-    product.variants.map((item) => {
-      if (item.color === color) {
-        product.images.map((img) => {
-          if (img.image_id === item.image_id) {
-            this.imageSrc = img.src;
-          }
-        })
+  getVariant(color, size){
+    
+    for(let variant of this.productVariantList){
+      if(variant.color == color && variant.size == size)
+        return variant
+    }
+    return null
+  }
+
+  
+  // Get Product Color and Images
+  getColorImageList() {
+    const colors: any[]=[];
+    for(let variant of this.productVariantList) {
+        if( colors.indexOf({color: variant.color, image: variant.img}) == -1  ){         
+            colors.push({color:variant.color,image: variant.img})               
       }
-    })
+    }
+    return colors;
   }
  
-  
+  getSizeList(){
+    const sizes: string[]=[];
+    for(let variant of this.productVariantList) {     
+      if( sizes.indexOf(variant.size) == -1)       
+        sizes.push(variant.size)            
+    }
+    return sizes;
+  }
+
+  selectColor(color){    
+    
+    this.selectedColor = color['color']
+    this.imageSrc = color['image']   
+  }
+
   // Change Variants Image
-  ChangeVariantsImage(src) {
-    this.imageSrc = src;
+  changeVariantsImage(item) {
+    this.imageSrc = item['image'];
+    this.selectedColor = item['color']
   }
 
-  addToCart(product: Product) {
-    this.orderLine.description = product.name
-    this.orderLine.productId = product.id
-    // this.orderLine.variantID = this.getVariantID()
-    // this.productService.addToCart(product);
+  setOrderLine(){
+    
+    this.orderLine.description = this.product.name + " Size:" + this.selectedVariant.size + " Color:" + this.selectedVariant.color
+    this.orderLine.productId = this.product.id
+    this.orderLine.variantId = this.selectedVariant.id
+    this.orderLine.localCurrency = this.settingsService.localCurrency
+    this.orderLine.priceLocalCurrency = this.selectedVariant.price * this.settingsService.localCurrency.price
+    this.orderLine.priceMainCurrency = this.selectedVariant.price
+    this.orderLine.image = this.selectedVariant.img
+    this.orderLine.qty = 1
+    this.orderLine.state = "draft"
   }
 
-  addToWishlist(product: any) {
+  async addToCart(product: Product) {
+    
+    //TODO: should show available size to choose the size
+    this.selectedVariant = this.getVariant(this.selectedColor, this.avialableSizeList[0])
+    if(this.selectedVariant.id != ""){
+      this.setOrderLine()
+      const status = this.productService.addToCart(this.orderLine);
+    }
+  }
+
+  addToWishlist(product: Product) {
+    
     this.productService.addToWishlist(product);
+    
   }
 
-  addToCompare(product: any) {
+  addToCompare(product: Product) {
+    debugger
     this.productService.addToCompare(product);
   }
 
@@ -93,16 +142,7 @@ export class ProductBoxOneComponent implements OnInit {
     return imgs  
   }
 
-  // Get Product Color and Images
-  getColorList() {
-    const colors: any[]=[];
-    for(let variant of this.productVariantList) {
-        if( colors.indexOf({color: variant.color, image: variant.img}) == -1  ){         
-            colors.push({color:variant.color,image: variant.img})               
-      }
-    }
-    return colors;
-  }
+  
 
   gotoProductDetails(product: any){   
     this.productService.currentProduct = product;              

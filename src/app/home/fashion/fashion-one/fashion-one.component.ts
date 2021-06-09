@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 
 import { ProductSlider } from '../../../shared/data/slider';
 import { ProductService } from '../../../core/services/product.service';
+import { SettingsService} from '../../../core/services/settings.service'
 import { Product } from '../../../shared/models/product.model'; 
 
 @Component({
@@ -14,7 +15,10 @@ export class FashionOneComponent implements OnInit {
   productList: Product[] = [];
   public productCollections: any[] = [];
   
-  constructor(public productService: ProductService) {    
+  constructor(
+        public productService: ProductService,
+        public settingsService: SettingsService,
+    ) {    
     productService.getProductList().subscribe(response => {
       this.productList = response;
       // Get Product Collection

@@ -39,7 +39,7 @@
                                 </div>
                                 <div class="col-xs-3">
                                     <h2 class="td-color">
-                                        {{ (line.priceLocalCurrency | discount:line) * productService?.Currency.priceLocalCurrency | currency:productService?.Currency.currency:'symbol' }}
+                                        {{ (line.priceLocalCurrency | discount:line) * line.localCurrency.price | currency:settingsService?.localCurrency.currency:'symbol' }}
                                     </h2>
                                 </div>
                                 <div class="col-xs-3">
@@ -53,7 +53,7 @@
                         </td>
                         <td>
                             <h2>
-                                {{ (line.priceLocalCurrency) * productService?.Currency.price | currency:productService?.Currency.currency:'symbol' }}
+                                {{ (line.priceLocalCurrency) * line.localCurrency.price | currency:settingsService?.localCurrency.currency:'symbol' }}
                             </h2>
                         </td>
                         <td>
@@ -64,7 +64,7 @@
                                             <i class="ti-angle-left"></i>
                                         </button>
                                     </span>
-                                    <input type="text" name="quantity" class="form-control input-number" disabled [(ngModel)]="line.qty">
+                                    <input type="text" name="quantity" class="form-control input-number" [(ngModel)]="line.qty">
                                     <span class="input-group-prepend">
                                         <button type="button" class="btn quantity-right-plus"  data-type="plus" (click)="increment(line)">
                                             <i class="ti-angle-right"></i>
@@ -80,7 +80,7 @@
                         </td>
                         <td>
                             <h2 class="td-color">
-                                {{ ((line.priceLocalCurrency ) * line.qty) * productService?.Currency.price | currency:productService?.Currency.currency:'symbol' }}
+                                {{ ((line.priceLocalCurrency ) * line.qty) * line.localCurrency.price | currency:settingsService?.localCurrency.currency:'symbol' }}
                             </h2>
                         </td>
                     </tr>
@@ -91,7 +91,7 @@
                     <tr>
                         <td>total price :</td>
                         <td>
-                            <h2> {{ getTotal | async | currency:productService?.Currency.currency:'symbol'}}</h2>
+                            <h2> {{ getTotal | async | currency:settingsService.localCurrency.currency:'symbol'}}</h2>
                         </td>
                     </tr>
                 </tfoot>
@@ -100,7 +100,7 @@
         </div>
         <div class="row cart-buttons" *ngIf='orderLines.length'>
             <div class="col-6">
-                <a [routerLink]="['/shop/collection/left/sidebar']" class="btn btn-solid">{{"continue-shopping" | translate }}g</a>
+                <a [routerLink]="['/shop/collection/left/sidebar']" class="btn btn-solid">{{"continue-shopping" | translate }}</a>
             </div>
             <div class="col-6">
                 <a [routerLink]="['/shop/checkout']" class="btn btn-solid">{{"check-out" | translate }}</a>

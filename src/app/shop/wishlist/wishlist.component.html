@@ -23,7 +23,7 @@
             <tr>
               <td>
                   <a [routerLink]="['/shop/product/left/sidebar/', product.id]">
-                    <img [src]="product.images[0].src" [alt]="product.images[0].alt">
+                    <img [src]="product.images[0].url" [alt]="product.images[0].alt" >
                   </a>
               </td>
               <td>
@@ -34,7 +34,7 @@
                     </div>
                     <div class="col-xs-3">
                       <h2 class="td-color">
-                          {{ (product.price | discount:product) * productService?.Currency.price | currency:productService?.Currency.currency:'symbol' }}
+                        {{ (product.price.salePrice | discount:product) | currency:settingsService?.localCurrency.currency:'symbol' }}
                       </h2>
                     </div>
                     <div class="col-xs-3">
@@ -51,7 +51,7 @@
               </td>
               <td>
                   <h2>
-                    {{ (product.price | discount:product) * productService?.Currency.price | currency:productService?.Currency.currency:'symbol' }}
+                    {{ (product.price.salePrice) * product.price.salePrice | currency:settingsService?.localCurrency.currency:'symbol' }}
                   </h2>
               </td>
               <td>
@@ -61,7 +61,7 @@
                   <a href="javascript:void(0)" (click)="removeItem(product)" class="icon mr-3">
                     <i class="ti-close"></i>
                   </a>
-                  <a href="javascript:void(0)" (click)="addToCart(product)" class="cart">
+                  <a [routerLink]="['/shop/product/left/sidebar/', product.id]" class="cart">
                     <i class="ti-shopping-cart"></i>
                   </a>
               </td>

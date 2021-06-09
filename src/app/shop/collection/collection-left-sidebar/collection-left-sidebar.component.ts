@@ -5,6 +5,7 @@ import { Observable, BehaviorSubject, combineLatest } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 import { ProductService } from '../../../core/services/product.service'
+import { SettingsService} from '../../../core/services/settings.service'
 import { Product } from '../../../shared/models/product.model'
 
 @Component({
@@ -35,7 +36,8 @@ export class CollectionLeftSidebarComponent implements OnInit {
     private route: ActivatedRoute, 
     private router: Router,
     private viewScroller: ViewportScroller, 
-    public productService: ProductService) {   
+    public productService: ProductService,
+    private settingsService: SettingsService) {   
       // Get Query params..
       this.route.queryParams.subscribe(params => {
 
